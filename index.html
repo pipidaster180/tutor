@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Гайд по ведению Telegram-канала — 32team</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#fff;color:#111;line-height:1.65;font-size:16px}
+#progress-bar{position:fixed;top:0;left:0;height:3px;background:#111;width:0;z-index:9999;transition:width .1s}
+.container{max-width:1200px;margin:0 auto;padding:30px 24px 80px}
+header{border-bottom:2px solid #111;padding-bottom:20px;margin-bottom:24px}
+.badge{display:inline-block;border:1.5px solid #111;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px}
+h1{font-size:32px;font-weight:800;letter-spacing:-.5px;line-height:1.15;margin-bottom:8px}
+.subtitle{font-size:15px;color:#555}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:30px}
+.tool-card{border:2px solid #111;border-radius:12px;padding:18px;background:#fff}
+.tool-card h3{font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+.tool-card input,.tool-card textarea,.tool-card select{width:100%;border:1.5px solid #111;border-radius:8px;padding:11px 12px;font-size:15px;font-family:inherit;outline:none;margin-bottom:9px;background:#fff}
+.tool-card textarea{min-height:105px;resize:vertical}
+.tool-card input:focus,.tool-card textarea:focus,.tool-card select:focus{border-width:2px}
+button{font-family:inherit}
+.tool-btn,.copy-all{background:#111;color:#fff;border:2px solid #111;padding:11px 16px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;width:100%}
+.tool-btn:hover,.copy-all:hover{background:#2b2b2b}
+.copy-all{grid-column:1/-1;padding:14px}
+.result{display:none;margin-top:10px;padding:12px;border:1.5px solid #111;border-radius:8px;background:#f7f7f7;font-size:14px}
+.result.show{display:block}
+.mini-actions{display:flex;gap:7px;margin-top:10px}
+.mini-actions button{width:auto;padding:7px 10px}
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px;font-size:12px;font-weight:700}
+.stats span{border:1.5px solid #111;padding:4px 10px;border-radius:20px;white-space:nowrap}
+.warn{background:#111!important;color:#fff!important}
+.checklist{list-style:none;margin:0}
+.checklist li{display:flex;align-items:flex-start;gap:9px;padding:6px 0;border-bottom:1px solid #eee;font-size:14px}
+.checklist li:last-child{border-bottom:none}
+.checklist input{width:17px;height:17px;margin-top:3px;accent-color:#111;cursor:pointer;flex-shrink:0}
+.checklist label{cursor:pointer;flex:1}
+.checklist input:checked+label{text-decoration:line-through;color:#888}
+.guide-title{font-size:20px;font-weight:800;margin:40px 0 16px;padding-bottom:10px;border-bottom:2px solid #111;text-transform:uppercase;letter-spacing:.5px}
+section{border:1.5px solid #111;border-radius:12px;margin-bottom:12px;overflow:hidden}
+.section-head{display:flex;justify-content:space-between;align-items:center;padding:15px 18px;cursor:pointer;background:#fff;user-select:none}
+.section-head:hover{background:#f5f5f5}
+.section-head h2{font-size:17px;font-weight:700;display:flex;align-items:center;gap:10px}
+.section-num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:#111;color:#fff;border-radius:50%;font-size:13px;font-weight:700;flex-shrink:0}
+.toggle-icon{font-size:20px;font-weight:700;transition:transform .2s}
+section.collapsed .toggle-icon{transform:rotate(-90deg)}
+section.collapsed .section-body{display:none}
+.section-body{padding:4px 18px 20px;border-top:1px dashed #ccc}
+p{margin:10px 0}
+ul,ol{margin:10px 0 10px 22px}
+li{margin-bottom:7px}
+h3.sub{font-size:14px;font-weight:800;margin:18px 0 8px;text-transform:uppercase;letter-spacing:.5px}
+.block{border-left:4px solid #111;background:#f7f7f7;padding:12px 16px;margin:12px 0;border-radius:0 8px 8px 0;font-size:14.5px}
+.block.good{border-left-style:solid}
+.block.bad{border-left-style:double}
+.block .label{font-weight:800;display:block;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+.copy-box{position:relative;border:1.5px dashed #111;border-radius:8px;padding:14px 80px 14px 16px;margin:12px 0;font-family:"Courier New",monospace;font-size:14px;background:#fafafa;word-break:break-word}
+.copy-btn{position:absolute;top:8px;right:8px;background:#111;color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer}
+.copy-btn.done{background:#555}
+.tip-inline{display:inline-block;background:#111;color:#fff;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:800;vertical-align:middle;letter-spacing:.5px}
+.table-wrap{overflow-x:auto;margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:600px}
+th,td{border:1px solid #ddd;padding:9px;text-align:left;vertical-align:top}
+th{background:#f5f5f5;font-weight:800}
+.kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
+.kpi div{border:1.5px solid #111;border-radius:9px;padding:12px;background:#fafafa}
+.kpi strong{display:block;font-size:20px}
+.kpi span{font-size:12px;color:#666}
+footer{margin-top:50px;padding-top:24px;border-top:2px solid #111;text-align:center;font-size:13px;color:#555}
+footer strong{color:#111}
+@media(max-width:900px){.tools{grid-template-columns:1fr}.container{padding:24px 18px 60px}.kpi{grid-template-columns:1fr 1fr}h1{font-size:26px}}
+@media(max-width:600px){.container{padding:20px 14px 50px}h1{font-size:22px}.subtitle{font-size:13.5px}.section-head h2{font-size:15px}.section-head{padding:13px 14px}.section-body{padding:4px 14px 16px}.copy-box{padding-right:16px;padding-top:42px}.copy-btn{top:6px;right:6px}.tool-card{padding:14px}.guide-title{font-size:17px}}
+</style>
+</head>
+<body>
+<div id="progress-bar"></div>
+<div class="container">
+
+<header>
+<span class="badge">32team · Практический гайд</span>
+<h1>Как вести Telegram-канал, чтобы его было приятно читать</h1>
+<p class="subtitle">Оформление, контент, посты, регулярность, аналитика, продвижение и полезные инструменты в одном файле.</p>
+</header>
+
+<div class="tools">
+<button class="copy-all" onclick="copyAll(this)">Скопировать весь гайд</button>
+
+<div class="tool-card">
+<h3>Генератор описания</h3>
+<input id="genTheme" placeholder="Тема канала: игры, новости, спорт...">
+<select id="genAudience">
+<option value="всех, кому интересна эта тема">Для широкой аудитории</option>
+<option value="новичков в этой теме">Для новичков</option>
+<option value="людей, которые уже разбираются">Для опытной аудитории</option>
+</select>
+<button class="tool-btn" onclick="generateDesc()">Сгенерировать</button>
+<div class="result" id="genResult"></div>
+</div>
+
+<div class="tool-card">
+<h3>Проверка поста</h3>
+<textarea id="postArea" placeholder="Вставь текст поста..."></textarea>
+<div class="stats">
+<span id="statChars">Символов: 0</span>
+<span id="statWords">Слов: 0</span>
+<span id="statLines">Строк: 0</span>
+<span id="statEmoji">Эмодзи: 0</span>
+</div>
+</div>
+
+<div class="tool-card">
+<h3>Конструктор поста</h3>
+<input id="postTopic" placeholder="Тема поста">
+<select id="postType">
+<option>Новость / событие</option>
+<option>Полезный совет</option>
+<option>Разбор</option>
+<option>Подборка</option>
+<option>Опрос / обсуждение</option>
+<option>Реклама / предложение</option>
+</select>
+<button class="tool-btn" onclick="buildPost()">Собрать структуру</button>
+<div class="result" id="postResult"></div>
+</div>
+
+<div class="tool-card">
+<h3>Чек-лист публикации</h3>
+<ul class="checklist">
+<li><input type="checkbox" id="p1"><label for="p1">Тема поста понятна с первой строки</label></li>
+<li><input type="checkbox" id="p2"><label for="p2">Проверены факты, даты, имена и ссылки</label></li>
+<li><input type="checkbox" id="p3"><label for="p3">Нет лишней «воды» и повторов</label></li>
+<li><input type="checkbox" id="p4"><label for="p4">Текст разбит на удобные абзацы</label></li>
+<li><input type="checkbox" id="p5"><label for="p5">Изображение или видео действительно дополняет пост</label></li>
+<li><input type="checkbox" id="p6"><label for="p6">Ссылка проверена и ведёт туда, куда нужно</label></li>
+<li><input type="checkbox" id="p7"><label for="p7">Есть понятный следующий шаг для читателя</label></li>
+</ul>
+</div>
+
+<div class="tool-card">
+<h3>Идеи контента</h3>
+<input id="ideaTheme" placeholder="Тема канала">
+<button class="tool-btn" onclick="generateIdeas()">Получить идеи</button>
+<div class="result" id="ideaResult"></div>
+</div>
+
+<div class="tool-card">
+<h3>Проверка оформления канала</h3>
+<ul class="checklist">
+<li><input type="checkbox" id="c1"><label for="c1">Название понятно без дополнительных объяснений</label></li>
+<li><input type="checkbox" id="c2"><label for="c2">Username легко прочитать и запомнить</label></li>
+<li><input type="checkbox" id="c3"><label for="c3">Аватар хорошо выглядит в маленьком размере</label></li>
+<li><input type="checkbox" id="c4"><label for="c4">Описание объясняет пользу канала</label></li>
+<li><input type="checkbox" id="c5"><label for="c5">Закреплён пост с навигацией</label></li>
+<li><input type="checkbox" id="c6"><label for="c6">Ссылки и контакты актуальны</label></li>
+</ul>
+</div>
+</div>
+
+<h2 class="guide-title">Полный гайд</h2>
+
+<section>
+<div class="section-head" onclick="toggleSection(this)"><h2><span class="section-num">1</span> Основа канала: тема и аудитория</h2><span class="toggle-icon">▾</span></div>
+<div class="section-body">
+<p>До оформления реши две вещи: <strong>о чём канал</strong> и <strong>для кого он</strong>. Чем понятнее позиционирование, тем легче человеку решить, подходит ли ему канал.</p>
+<h3 class="sub">Сделай основу</h3>
+<ul>
+<li>Выбери одну основную тему и несколько связанных направлений.</li>
+<li>Определи аудиторию: новичок, фанат темы, профессионал, школьник, предприниматель и т. д.</li>
+<li>Сформулируй пользу одним предложением: «После подписки человек получает ...».</li>
+</ul>
+<div class="copy-box">Мы публикуем короткие и понятные разборы по теме. Без лишней воды: новости, полезные советы и подборки.</div>
+<div class="block"><span class="label">Важно</span>Не нужно пытаться охватить абсолютно всё. Если канал сегодня про игры, завтра про мемы, а послезавтра про новости города, человеку сложнее понять, зачем подписываться.</div>
+</div>
+</section>
+
+<section>
+<div class="section-head" onclick="toggleSection(this)"><h2><span class="section-num">2</span> Название, username и аватар</h2><span class="toggle-icon">▾</span></div>
+<div class="section-body">
+<p>Название и аватар должны быстро объяснять, что это за канал. Жёсткого универсального ограничения вроде «до 15 символов» нет, поэтому ориентируйся прежде всего на читаемость.</p>
+<h3 class="sub">Название</h3>
+<ul>
+<li>Сделай его коротким и легко произносимым.</li>
+<li>Избегай случайных наборов цифр и символов, если они не являются частью бренда.</li>
+<li>Не используй постоянный CAPS LOCK ради привлечения внимания.</li>
+<li>Если канал уже узнаваем, не меняй название без причины.</li>
+</ul>
+<h3 class="sub">Username</h3>
+<ul>
+<li>Сделай его максимально похожим на название канала.</li>
+<li>Проверь, что его легко продиктовать и написать без ошибок.</li>
+<li>Не меняй username постоянно: старые ссылки могут стать неудобными для аудитории.</li>
+</ul>
+<h3 class="sub">Аватар</h3>
+<ul>
+<li>Проверь, как он выглядит в маленьком круглом размере.</li>
+<li>Не перегружай мелким текстом.</li>
+<li>Выбери один узнаваемый элемент: знак, букву, персонажа или простой объект.</li>
+</ul>
+</div>
+</section>
+
+<section>
+<div class="section-head" onclick="toggleSection(this)"><h2><span class="section-num">3</span> Описание и закреплённый пост</h2><span class="toggle-icon">▾</span></div>
+<div class="section-body">
+<p>Описание должно быстро отвечать на вопрос: <strong>что здесь публикуют и зачем подписываться?</strong></p>
+<h3 class="sub">Рабочая формула</h3>
+<div class="copy-box">[Что публикуем] + [для кого] + [чем канал отличается] + [частота или формат] + [контакт/ссылка при необходимости]</div>
+<div class="copy-box">Новости и разборы технологий для тех, кто хочет быстро понимать главное. Коротко, понятно, без лишней воды. Новые публикации регулярно.</div>
+<h3 class="sub">Закреп</h3>
+<p>Закрепи пост, который помогает новому человеку разобраться в канале. В нём можно указать навигацию, важные публикации, правила, контакты и рекламную информацию.</p>
+<div class="block good"><span class="label">Пример структуры закрепа</span>О канале → с чего начать → лучшие материалы → навигация по рубрикам → контакты → правила.</div>
+</div>
+</section>
+
+<section>
+<div class="section-head" onclick="toggleSection(this)"><h2><span class="section-num">4</span> Контент-план: что публиковать</h2><span class="toggle-icon">▾</span></div>
+<div class="section-body">
+<p>Не обязательно каждый день придумывать тему с нуля. Составь несколько постоянных рубрик и чередуй их.</p>
+<div class="table-wrap"><table>
+<tr><th>Рубрика</th><th>Что публиковать</th><th>Пример</th></tr>
+<tr><td>Новости</td><td>Новые события по теме</td><td>Короткая новость + источник + главное последствие</td></tr>
+<tr><td>Польза</td><td>Советы, инструкции, чек-листы</td><td>«5 вещей, которые стоит проверить»</td></tr>
+<tr><td>Разбор</td><td>Объяснение сложной темы</td><td>Что произошло и почему это важно</td></tr>
+<tr><td>Подборка</td><td>Несколько связанных объектов</td><td>«7 инструментов для...»</td></tr>
+<tr><td>Мнение</td><td>Авторская позиция</td><td>Мнение автора с аргументами</td></tr>
+<tr><td>Интерактив</td><td>Вопросы, реакции, опросы</td><td>«Какой вариант выбрали бы вы?»</td></tr>
+</table></div>
+<p>Хорошая практика — заранее набросать темы хотя бы на неделю. Частоту выбирай такую, которую реально поддерживать без постоянного падения качества.</p>
+</div>
+</section>
+
+<section>
+<div class="section-head" onclick="toggleSection(this)"><h2><span class="section-num">5</span> Как писать пост</h2><span class="toggle-icon">▾</span></div>
+<div class="section-body">
+<h3 class="sub">Базовая структура</h3>
+<ol>
+<li><strong>Захват внимания.</strong> Первая строка должна сразу обозначить тему или главный факт.</li>
+<li><strong>Контекст.</strong> Что произошло и почему это важно.</li>
+<li><strong>Основная информация.</strong> Факты, объяснение, примеры или аргументы.</li>
+<li><strong>Вывод.</strong> Что читателю стоит запомнить.</li>
+<li><strong>Следующий шаг.</strong> Перейти по ссылке, посмотреть материал, написать комментарий или просто прочитать следующий пост.</li>
+</ol>
+<div class="block bad"><span class="label">Плохо</span>Огромная стена текста, повторение одной мысли, много пустых фраз, непроверенная информация и несколько разных тем в одном посте.</div>
+<div class="block good"><span class="label">Хорошо</span>Одна основная мысль, короткие абзацы, конкретные факты, понятная структура и действие в конце, если оно действительно нужно.</div>
+<h3 class="sub">Эмодзи</h3>
+<p>Нет универсального правильного количества эмодзи. Если они подходят стилю канала — используй умеренно. Если канал серьёзный, их можно вообще не использовать.</p>
+</div>
+</section>
+
+<section>
+<div class="section-head" onclick="toggleSection(this)"><h2><span class="section-num">6</span> Заголовок и первые строки</h2><span class="toggle-icon">▾</span></div>
+<div class="section-body">
+<p>Не существует гарантированного правила вроде «первые 3 секунды решают» для каждого Telegram-канала. Но начало поста действительно важно: читатель быстро решает, продолжать ли чтение.</p>
+<h3 class="sub">Рабочие варианты</h3>
+<ul>
+<li><strong>Факт:</strong> «Telegram добавил новую функцию...»</li>
+<li><strong>Проблема:</strong> «Почему ваши посты читают, но почти не комментируют?»</li>
+<li><strong>Обещание пользы:</strong> «Вот три способа упростить...»</li>
+<li><strong>Интрига:</strong> «Есть одна деталь, которую многие пропускают...» — только если дальше действительно есть содержание.</li>
+</ul>
+<p>Не обещай в заголовке то, чего нет в тексте. Кликбейт может дать переход, но разрушить доверие.</p>
+</div>
+</section>
+
+<section>
+<div class="section-head" onclick="toggleSection(this)"><h2><span class="section-num">7</span> Грамотность и проверка фактов</h2><span class="toggle-icon">▾</span></div>
+<div class="section-body">
+<h3 class="sub">Перед публикацией</h3>
+<ul>
+<li>Проверь окончания, запятые, «тся/ться», «не» с глаголами.</li>
+<li>Проверь имена, цифры, даты, цены и названия.</li>
+<li>Открой каждую внешнюю ссылку.</li>
+<li>Отделяй факт от собственного мнения.</li>
+<li>Если информация спорная или быстро меняется, указывай источник и дату.</li>
+</ul>
+<div class="copy-box">«Он учится» — что делает? «Учится».<br>«Он хочет учиться» — что делать? «Учиться».</div>
+<p>Полезный приём: прочитай готовый пост вслух. Это помогает заметить повторы, слишком длинные предложения и неестественные формулировки.</p>
+</div>
+</section>
+
+<section>
+<div class="section-head" onclick="toggleSection(this)"><h2><span class="section-num">8</span> Картинки, видео и ссылки</h2><span class="toggle-icon">▾</span></div>
+<div class="section-body">
+<ul>
+<li>Медиа должно помогать посту, а не просто заполнять место.</li>
+<li>Перед публикацией проверь качество изображения и читаемость текста на телефоне.</li>
+<li>Не используй чужие материалы без проверки прав на их использование.</li>
+<li>Если ставишь внешнюю ссылку, убедись, что она работает и соответствует тексту.</li>
+<li>Для важных ссылок можно использовать отдельную навигацию или понятный закреп.</li>
+</ul>
+<div class="block"><span class="label">Практический совет</span>Открой пост именно с телефона. На компьютере длинный текст и мелкая картинка могут выглядеть нормально, а на мобильном — неудобно.</div>
+</div>
+</section>
+
+<section>
+<div class="section-head" onclick="toggleSection(this)"><h2><span class="section-num">9</span> Регулярность и время публикаций</h2><span class="toggle-icon">▾</span></div>
+<div class="section-body">
+<p>Нет универсального расписания, которое гарантирует рост. Время публикации зависит от аудитории, темы и её часового пояса.</p>
+<h3 class="sub">Как найти своё время</h3>
+<ol>
+<li>Выбери 2–3 временных окна.</li>
+<li>Публикуй похожий по типу контент в разные окна несколько раз.</li>
+<li>Сравни просмотры и другие доступные показатели через одинаковый промежуток времени.</li>
+<li>Оставь расписание, которое удобно аудитории и тебе.</li>
+</ol>
+<p>Лучше стабильный график, который ты можешь поддерживать, чем слишком частые публикации с падением качества.</p>
+</div>
+</section>
+
+<section>
+<div class="section-head" onclick="toggleSection(this)"><h2><span class="section-num">10</span> Аналитика: что смотреть</h2><span class="toggle-icon">▾</span></div>
+<div class="section-body">
+<p>Не оценивай канал только по числу подписчиков. Смотри, какие публикации реально интересуют аудиторию.</p>
+<div class="kpi">
+<div><strong>Просмотры</strong><span>Сколько людей увидело пост</span></div>
+<div><strong>Реакции</strong><span>Какая реакция у аудитории</span></div>
+<div><strong>Комментарии</strong><span>Есть ли обсуждение</span></div>
+<div><strong>Переходы</strong><span>Работают ли ссылки и CTA</span></div>
+</div>
+<h3 class="sub">Простой разбор</h3>
+<ul>
+<li>Сравни 5–10 последних постов.</li>
+<li>Отметь темы, форматы и заголовки, которые получают больше внимания.</li>
+<li>Не делай вывод по одному вирусному посту.</li>
+<li>Проверяй результат через одинаковое время после публикации.</li>
+<li>Повторяй удачные форматы, но не копируй один пост бесконечно.</li>
+</ul>
+</div>
+</section>
+
+<section>
+<div class="section-head" onclick="toggleSection(this)"><h2><span class="section-num">11</span> Рост и продвижение</h2><span class="toggle-icon">▾</span></div>
+<div class="section-body">
+<ul>
+<li>Делай контент, которым хочется поделиться.</li>
+<li>Договаривайся о взаимных упоминаниях с каналами похожей тематики.</li>
+<li>Публикуй полезные материалы в тематических сообществах там, где это разрешено правилами.</li>
+<li>Используй рекламу только там, где понимаешь аудиторию и условия размещения.</li>
+<li>Проверяй рекламные источники по результатам, а не только по количеству подписчиков.</li>
+<li>Не покупай ботов и не используй искусственную активность: такие цифры не равны живой аудитории.</li>
+</ul>
+<div class="block"><span class="label">Важно</span>Не обещай себе «быстрый рост». У канала может быть хороший контент, но аудитории понадобится время, чтобы его найти.</div>
+</div>
+</section>
+
+<section>
+<div class="section-head" onclick="toggleSection(this)"><h2><span class="section-num">12</span> Комментарии и общение</h2><span class="toggle-icon">▾</span></div>
+<div class="section-body">
+<ul>
+<li>Отвечай на нормальные вопросы аудитории.</li>
+<li>Удаляй спам и сообщения, нарушающие правила сообщества.</li>
+<li>Не вступай в бессмысленные конфликты от имени канала.</li>
+<li>Если вопрос повторяется, добавь ответ в FAQ или закреп.</li>
+<li>Иногда задавай конкретные вопросы по теме, а не формальное «ну что думаете?».</li>
+</ul>
+<div class="copy-box">Какой вариант разобрать следующим? Напишите номер в комментариях: 1, 2 или 3.</div>
+</div>
+</section>
+
+<section>
+<div class="section-head" onclick="toggleSection(this)"><h2><span class="section-num">13</span> Безопасность канала</h2><span class="toggle-icon">▾</span></div>
+<div class="section-body">
+<ul>
+<li>Включи двухэтапную аутентификацию аккаунта.</li>
+<li>Не передавай посторонним коды входа и данные восстановления.</li>
+<li>Проверяй права администраторов.</li>
+<li>Удаляй доступ бывших сотрудников или помощников, если он больше не нужен.</li>
+<li>Перед подключением сторонних ботов проверяй, какие права им выдаются.</li>
+<li>Для рабочих процессов используй отдельные аккаунты и минимально необходимые права, когда это возможно.</li>
+</ul>
+</div>
+</section>
+
+<section>
+<div class="section-head" onclick="toggleSection(this)"><h2><span class="section-num">14</span> Типичные ошибки новичков</h2><span class="toggle-icon">▾</span></div>
+<div class="section-body">
+<ul>
+<li>Канал запускается без понятной темы.</li>
+<li>Публикации выходят хаотично и без рубрик.</li>
+<li>Каждый пост пытается продать что-то читателю.</li>
+<li>Заголовок обещает больше, чем есть в тексте.</li>
+<li>Публикуются непроверенные новости.</li>
+<li>В постах слишком много повторов и «воды».</li>
+<li>Автор ориентируется только на число подписчиков.</li>
+<li>Покупается искусственная аудитория вместо работы с контентом.</li>
+<li>Ссылки и контакты остаются устаревшими.</li>
+<li>Администраторы забывают про безопасность аккаунта.</li>
+</ul>
+</div>
+</section>
+
+<section>
+<div class="section-head" onclick="toggleSection(this)"><h2><span class="section-num">15</span> Готовый план на неделю</h2><span class="toggle-icon">▾</span></div>
+<div class="section-body">
+<div class="table-wrap"><table>
+<tr><th>День</th><th>Формат</th><th>Задача</th></tr>
+<tr><td>Понедельник</td><td>Главная новость</td><td>Дать аудитории важное событие недели</td></tr>
+<tr><td>Вторник</td><td>Полезный пост</td><td>Дать конкретную пользу</td></tr>
+<tr><td>Среда</td><td>Опрос / обсуждение</td><td>Получить обратную связь</td></tr>
+<tr><td>Четверг</td><td>Разбор</td><td>Показать экспертность или глубину</td></tr>
+<tr><td>Пятница</td><td>Подборка</td><td>Собрать несколько полезных материалов</td></tr>
+<tr><td>Выходной</td><td>По ситуации</td><td>Лёгкий контент или важная новость</td></tr>
+</table></div>
+<p>Это шаблон, а не обязательная норма. Меняй его под тему и реальную активность аудитории.</p>
+</div>
+</section>
+
+<section>
+<div class="section-head" onclick="toggleSection(this)"><h2><span class="section-num">16</span> Финальный чек-лист перед публикацией</h2><span class="toggle-icon">▾</span></div>
+<div class="section-body">
+<ul class="checklist">
+<li><input type="checkbox" id="f1"><label for="f1">Я понимаю, какую одну мысль должен получить читатель</label></li>
+<li><input type="checkbox" id="f2"><label for="f2">Первая строка объясняет тему</label></li>
+<li><input type="checkbox" id="f3"><label for="f3">Факты и ссылки проверены</label></li>
+<li><input type="checkbox" id="f4"><label for="f4">Текст легко читать с телефона</label></li>
+<li><input type="checkbox" id="f5"><label for="f5">Нет лишних повторов</label></li>
+<li><input type="checkbox" id="f6"><label for="f6">Медиа соответствует посту</label></li>
+<li><input type="checkbox" id="f7"><label for="f7">Призыв к действию используется только там, где он нужен</label></li>
+<li><input type="checkbox" id="f8"><label for="f8">Пост соответствует правилам канала</label></li>
+</ul>
+</div>
+</section>
+
+<footer>
+Гайд от <strong>32team</strong> · Ведение и оформление Telegram-каналов<br>
+Практический материал для начинающих администраторов
+</footer>
+</div>
+
+<script>
+window.addEventListener("scroll",()=>{
+ const h=document.documentElement;
+ const max=h.scrollHeight-h.clientHeight;
+ const scrolled=max>0?(h.scrollTop/max)*100:0;
+ document.getElementById("progress-bar").style.width=scrolled+"%";
+});
+
+function toggleSection(head){head.parentElement.classList.toggle("collapsed")}
+
+function copyText(btn){
+ const box=btn.parentElement;
+ const clone=box.cloneNode(true);
+ const b=clone.querySelector("button");
+ if(b)b.remove();
+ navigator.clipboard.writeText(clone.innerText.trim()).then(()=>{
+  btn.textContent="Готово";btn.classList.add("done");
+  setTimeout(()=>{btn.textContent="Копировать";btn.classList.remove("done")},1500);
+ });
+}
+
+function copyAll(btn){
+ const sections=document.querySelectorAll("section");
+ let text="ГАЙД ПО ВЕДЕНИЮ TELEGRAM-КАНАЛА (32team)\\n\\n";
+ sections.forEach(s=>{
+  const title=s.querySelector("h2").innerText.replace(/\\n/g," ").trim();
+  const body=s.querySelector(".section-body").innerText.trim();
+  text+="=== "+title+" ===\\n"+body+"\\n\\n";
+ });
+ navigator.clipboard.writeText(text).then(()=>{
+  btn.textContent="Скопировано";
+  setTimeout(()=>btn.textContent="Скопировать весь гайд",1800);
+ });
+}
+
+const postArea=document.getElementById("postArea");
+postArea.addEventListener("input",()=>{
+ const t=postArea.value;
+ document.getElementById("statChars").textContent="Символов: "+t.length;
+ document.getElementById("statWords").textContent="Слов: "+(t.trim()?t.trim().split(/\s+/).length:0);
+ document.getElementById("statLines").textContent="Строк: "+(t? t.split(/\n/).length:0);
+ const emoji=(t.match(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu)||[]).length;
+ const em=document.getElementById("statEmoji");
+ em.textContent="Эмодзи: "+emoji;
+ em.className=emoji>8?"warn":"";
+});
+
+function showResult(id,html){
+ const r=document.getElementById(id);
+ r.innerHTML=html;
+ r.classList.add("show");
+}
+
+function copyResult(btn){
+ const parent=btn.parentElement;
+ const text=parent.innerText.replace("Копировать","").trim();
+ navigator.clipboard.writeText(text).then(()=>{
+  btn.textContent="Готово";
+  setTimeout(()=>btn.textContent="Копировать",1500);
+ });
+}
+
+function generateDesc(){
+ const theme=document.getElementById("genTheme").value.trim();
+ const audience=document.getElementById("genAudience").value;
+ if(!theme){showResult("genResult","Сначала укажи тему канала.");return}
+ const templates=[
+ `Канал про ${theme} для ${audience}. Новости, полезные материалы и разборы — понятно и без лишней воды.`,
+ `${theme}: главное, интересное и полезное в одном месте. Подходит для ${audience}.`,
+ `Разбираем ${theme} простым языком: новости, советы, подборки и практические материалы. Для ${audience}.`
+ ];
+ const result=templates[Math.floor(Math.random()*templates.length)];
+ showResult("genResult",result+`<div class="mini-actions"><button class="tool-btn" onclick="copyResult(this)">Копировать</button></div>`);
+}
+
+function buildPost(){
+ const topic=document.getElementById("postTopic").value.trim()||"ваша тема";
+ const type=document.getElementById("postType").value;
+ const map={
+ "Новость / событие":`Заголовок: что произошло\\n\\n1. Главный факт.\\n2. Контекст: когда и где это произошло.\\n3. Почему это важно.\\n4. Источник или ссылка.\\n\\nФинал: короткий вывод.`,
+ "Полезный совет":`Заголовок: конкретная польза\\n\\nПроблема: ${topic}.\\nДальше — 3–5 практических шагов.\\n\\nФинал: что читателю сделать прямо сейчас.`,
+ "Разбор":`Заголовок: вопрос или главный тезис\\n\\nЧто произошло?\\nКакие есть факты?\\nКакие причины или последствия?\\nЧто важно запомнить?\\n\\nФинал: краткий вывод.`,
+ "Подборка":`Заголовок: подборка по теме «${topic}»\\n\\n1. Пункт + короткое объяснение.\\n2. Пункт + короткое объяснение.\\n3. Пункт + короткое объяснение.\\n\\nФинал: кому подборка пригодится.`,
+ "Опрос / обсуждение":`Заголовок: конкретный вопрос\\n\\nКороткий контекст по теме ${topic}.\\nЗатем — варианты ответа.\\n\\nПосле опроса: попросить объяснить выбор в комментариях.`,
+ "Реклама / предложение":`Заголовок: что предлагается\\n\\nПроблема клиента.\\nРешение и ключевые преимущества.\\nЦена или условия — если нужно.\\nСсылка или способ связи.\\n\\nНе перегружай текст рекламными обещаниями.`
+ };
+ showResult("postResult",(map[type]||map["Разбор"]).replace(/\\n/g,"<br>")+`<div class="mini-actions"><button class="tool-btn" onclick="copyResult(this)">Копировать</button></div>`);
+}
+
+function generateIdeas(){
+ const theme=document.getElementById("ideaTheme").value.trim()||"ваша тема";
+ const ideas=[
+ `5 ошибок новичков в теме «${theme}»`,
+ `Что изменилось в ${theme} за последнее время`,
+ `Короткий разбор: почему ${theme} важна`,
+ `3 полезных инструмента для тех, кто интересуется ${theme}`,
+ `Мифы о ${theme}: что правда, а что нет`,
+ `Чек-лист: с чего начать изучение ${theme}`,
+ `Подборка лучших материалов по теме ${theme}`,
+ `Вопрос аудитории: что разобрать следующим?`
+ ];
+ showResult("ideaResult",ideas.map((x,i)=>`${i+1}. ${x}`).join("<br>")+`<div class="mini-actions"><button class="tool-btn" onclick="copyResult(this)">Копировать</button></div>`);
+}
+
+document.querySelectorAll(".checklist input[type=checkbox]").forEach(cb=>{
+ const key="guide_2026_"+cb.id;
+ cb.checked=localStorage.getItem(key)==="1";
+ cb.addEventListener("change",()=>localStorage.setItem(key,cb.checked?"1":"0"));
+});
+</script>
+</body>
+</html>
